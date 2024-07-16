@@ -1,14 +1,17 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActorService } from '../../../services/actor.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Actor } from '../../../interfaces/actor';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-modal-actor',
   templateUrl: './modal-actor.component.html',
-  styleUrl: './modal-actor.component.css'
+  styleUrl: './modal-actor.component.css',
+  providers: [provideNativeDateAdapter()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalActorComponent {
   actorForm!: FormGroup;
@@ -44,23 +47,24 @@ export class ModalActorComponent {
   }
   
   setDatos(){
+    // Convertir las fechas a formato Date
+    const fechaNacimiento = new Date(this.actordata.fec_nac_act);
+    const fechaMuerte = new Date(this.actordata.fec_mue_act);
+
     this.actorForm.patchValue({
       cod_act: this.actordata.cod_act,
       nom_act: this.actordata.nom_act,
       nom_rea_act: this.actordata.nom_rea_act,
-      fec_nac_act: this.actordata.fec_nac_act,
-      fec_mue_act: this.actordata.fec_mue_act,
+      fec_nac_act: fechaNacimiento,
+      fec_mue_act: fechaMuerte,
       naciona_act: this.actordata.naciona_act,
     });
   }
-  
-  onSubmit(){
-
-  }
 
   guardarActor(){
+
     const _actor: Actor = {
-      cod_act: this.actordata == null ? '' : this.actordata.cod_act,
+      cod_act: this.actordata == null ? this.actorForm.value.cod_act : this.actordata.cod_act ,
       nom_act: this.actorForm.value.nom_act,
       nom_rea_act: this.actorForm.value.nom_rea_act,
       fec_nac_act: this.actorForm.value.fec_nac_act,

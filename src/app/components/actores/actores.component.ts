@@ -36,7 +36,6 @@ export class ActoresComponent {
 
   ngOnInit(): void {
     this.getActores();
-    //this.createActor();//Solo para probar el modal
   }
 
   ngAfterViewInit(): void {
@@ -63,7 +62,10 @@ export class ActoresComponent {
   }
   
   createActor(){
+
     this._dialog.open(ModalActorComponent, {
+      width: '550px',
+      height: '500px',
       disableClose: true
     }).afterClosed().subscribe(result =>{
       if(result === 'true'){
