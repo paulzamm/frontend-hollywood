@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Actor } from '../../../interfaces/actor';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import moment from 'moment';
 
 @Component({
   selector: 'app-modal-actor',
@@ -20,9 +21,9 @@ export class ModalActorComponent {
 
   constructor(private _formBuilder: FormBuilder, private _actorService: ActorService,
     private modalActual: MatDialogRef<ModalActorComponent>, private _snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public actordata: Actor,
+    @Inject(MAT_DIALOG_DATA) public obActor: Actor,
   ){
-    if(this.actordata != null){
+    if(this.obActor != null){
       this.accionTitle = 'Editar';
       this.accionButton = 'Actualizar';
     }
@@ -30,8 +31,8 @@ export class ModalActorComponent {
 
   ngOnInit(): void {
     this.actorForm = this.initForm();
-    if(this.actordata != null){
-      this.setDatos();
+    if(this.obActor != null){
+      this.setDatos(this.obActor);
     }
   }
   
@@ -46,32 +47,27 @@ export class ModalActorComponent {
     });
   }
   
-  setDatos(){
-    // Convertir las fechas a formato Date
-    const fechaNacimiento = new Date(this.actordata.fec_nac_act);
-    const fechaMuerte = new Date(this.actordata.fec_mue_act);
-
+  setDatos(actor: Actor){
     this.actorForm.patchValue({
-      cod_act: this.actordata.cod_act,
-      nom_act: this.actordata.nom_act,
-      nom_rea_act: this.actordata.nom_rea_act,
-      fec_nac_act: fechaNacimiento,
-      fec_mue_act: fechaMuerte,
-      naciona_act: this.actordata.naciona_act,
+      cod_act: actor.cod_act,
+      nom_act: actor.nom_act,
+      nom_rea_act: actor.nom_rea_act,
+      fec_nac_act: actor.fec_nac_act ? moment(actor.fec_nac_act, 'DD/MM/YYYY').toDate() : null,
+      fec_mue_act: actor.fec_mue_act ? moment(actor.fec_mue_act, 'DD/MM/YYYY').toDate() : null,
+      naciona_act: actor.naciona_act,
     });
   }
 
   guardarActor(){
-
     const _actor: Actor = {
-      cod_act: this.actordata == null ? this.actorForm.value.cod_act : this.actordata.cod_act ,
+      cod_act: this.obActor == null ? this.actorForm.value.cod_act : this.obActor.cod_act ,
       nom_act: this.actorForm.value.nom_act,
       nom_rea_act: this.actorForm.value.nom_rea_act,
       fec_nac_act: this.actorForm.value.fec_nac_act,
       fec_mue_act: this.actorForm.value.fec_mue_act,
       naciona_act: this.actorForm.value.naciona_act
     }
-    if(this.actordata == null){
+    if(this.obActor == null){
       this._actorService.createActor(_actor).subscribe({
         next: () =>{
           this._snackBar.open('Actor registrado con éxito', '', {

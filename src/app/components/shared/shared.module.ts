@@ -37,7 +37,7 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatGridListModule,
     MatDatepickerModule,
-    MatCardModule    
+    MatCardModule,
   ],
   exports:[
     MatSlideToggleModule,
@@ -55,7 +55,7 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatGridListModule,
     MatDatepickerModule,
-    MatCardModule 
+    MatCardModule,
   ]
 })
 export class SharedModule { }
